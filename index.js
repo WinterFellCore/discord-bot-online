@@ -18,15 +18,34 @@ tokens.forEach((token, index) => {
   if (!trimmedToken) return;
   
   const client = new Client({
-    checkUpdate: false
+    checkUpdate: false,
+    ws: {
+      properties: {
+        browser: 'Discord Client'
+      }
+    }
   });
   
   client.on('ready', () => {
     console.log(`✅ Conta ${index + 1} online: ${client.user.tag}`);
+    
+    // Mantém a presença ativa
+    setInterval(() => {
+      client.user.setPresence({ status: 'online' }).catch(() => {});
+    }, 60000); // A cada 1 minuto
   });
   
   client.on('error', (err) => {
     console.error(`❌ Erro na Conta ${index + 1}:`, err.message);
+  });
+  
+  client.on('disconnect', () => {
+    console.log(`🔄 Conta ${index + 1} desconectada, reconectando...`);
+    setTimeout(() => {
+      client.login(trimmedToken).catch(err => {
+        console.error(`❌ Falha ao reconectar Conta ${index + 1}:`, err.message);
+      });
+    }, 5000);
   });
   
   client.login(trimmedToken).catch(err => {
