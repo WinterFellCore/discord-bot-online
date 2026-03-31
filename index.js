@@ -17,6 +17,8 @@ tokens.forEach((token, index) => {
   
   if (!trimmedToken) return;
   
+  console.log(`🔄 Conectando Bot ${index + 1}...`);
+  
   const bot = new Eris(trimmedToken);
   
   bot.on("ready", () => {
@@ -27,7 +29,17 @@ tokens.forEach((token, index) => {
     console.error(`❌ Erro no Bot ${index + 1}:`, err);
   });
   
-  bot.connect().catch(err => {
+  bot.on("connect", (id) => {
+    console.log(`🔗 Bot ${index + 1} estabeleceu conexão (shard ${id})`);
+  });
+  
+  bot.on("shardReady", (id) => {
+    console.log(`✅ Bot ${index + 1} shard ${id} pronto!`);
+  });
+  
+  bot.connect().then(() => {
+    console.log(`✅ Bot ${index + 1} iniciou conexão com sucesso!`);
+  }).catch(err => {
     console.error(`❌ Falha ao conectar Bot ${index + 1}:`, err.message);
   });
 });
