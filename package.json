@@ -7,11 +7,11 @@
     "start": "node index.js"
   },
   "engines": {
-    "node": ">=14.x"
+    "node": ">=16.x"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "eris": "^0.17.2"
+    "discord.js-selfbot-v13": "^2.15.1"
   }
 }

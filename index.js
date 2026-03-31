@@ -1,5 +1,5 @@
-const Eris = require("eris");
-const keep_alive = require('./keep_alive.js')
+const { Client } = require('discord.js-selfbot-v13');
+const keep_alive = require('./keep_alive.js');
 
 // Suporta múltiplos tokens separados por vírgula
 const tokens = process.env.TOKENS ? process.env.TOKENS.split(',') : [];
@@ -9,37 +9,27 @@ if (tokens.length === 0) {
   process.exit(1);
 }
 
-console.log(`🚀 Iniciando ${tokens.length} bot(s)...`);
+console.log(`🚀 Iniciando ${tokens.length} conta(s)...`);
 
-// Conecta cada bot
+// Conecta cada conta
 tokens.forEach((token, index) => {
   const trimmedToken = token.trim();
   
   if (!trimmedToken) return;
   
-  console.log(`🔄 Conectando Bot ${index + 1}...`);
-  
-  const bot = new Eris(trimmedToken);
-  
-  bot.on("ready", () => {
-    console.log(`✅ Bot ${index + 1} conectado: ${bot.user.username}#${bot.user.discriminator}`);
+  const client = new Client({
+    checkUpdate: false
   });
   
-  bot.on("error", (err) => {
-    console.error(`❌ Erro no Bot ${index + 1}:`, err);
+  client.on('ready', () => {
+    console.log(`✅ Conta ${index + 1} online: ${client.user.tag}`);
   });
   
-  bot.on("connect", (id) => {
-    console.log(`🔗 Bot ${index + 1} estabeleceu conexão (shard ${id})`);
+  client.on('error', (err) => {
+    console.error(`❌ Erro na Conta ${index + 1}:`, err.message);
   });
   
-  bot.on("shardReady", (id) => {
-    console.log(`✅ Bot ${index + 1} shard ${id} pronto!`);
-  });
-  
-  bot.connect().then(() => {
-    console.log(`✅ Bot ${index + 1} iniciou conexão com sucesso!`);
-  }).catch(err => {
-    console.error(`❌ Falha ao conectar Bot ${index + 1}:`, err.message);
+  client.login(trimmedToken).catch(err => {
+    console.error(`❌ Falha ao conectar Conta ${index + 1}:`, err.message);
   });
 });
